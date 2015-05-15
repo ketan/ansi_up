@@ -55,6 +55,25 @@
       });
     };
 
+    Ansi_Up.prototype.flatten = function(input) {
+      var output = [], idx = 0;
+      for (var i = 0, length = input.length; i < length; i++) {
+        var value = input[i];
+        if (Array.isArray(value)) {
+          //flatten current level of array or arguments object
+          value = this.flatten(value);
+          var j = 0, len = value.length;
+          output.length += len;
+          while (j < len) {
+            output[idx++] = value[j++];
+          }
+        } else {
+          output[idx++] = value;
+        }
+      }
+      return output;
+    };
+
     Ansi_Up.prototype.ansi_to_html = function (txt, options) {
 
       var data4 = txt.split(/\033\[/);
@@ -68,13 +87,8 @@
 
       data5.unshift(first);
 
-      var flattened_data = data5.reduce( function (a, b) {
-        if (Array.isArray(b))
-          return a.concat(b);
+      var flattened_data = self.flatten(data5);
 
-        a.push(b);
-        return a;
-      }, []);
 
       var escaped_data = flattened_data.join('');
 
@@ -151,6 +165,11 @@
 
     // Module exports
     ansi_up = {
+
+      flatten: function(array){
+        var a2h = new Ansi_Up();
+        return a2h.flatten(array);
+      },
 
       escape_for_html: function (txt) {
         var a2h = new Ansi_Up();

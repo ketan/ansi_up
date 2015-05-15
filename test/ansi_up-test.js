@@ -305,5 +305,15 @@ describe('ansi_up', function() {
     });
 
   });
+
+  describe('flattening of arrays', function() {
+    it('flatten arrays', function() {
+      this.timeout(1);
+      var expected = [1, 2, 3, 4, 5];
+      var actual = ansi_up.flatten([1, [2, [3, [4], 5]]])
+      actual.should.eql(expected);
+    });
+  });
+
 });
 
